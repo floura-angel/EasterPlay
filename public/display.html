@@ -55,6 +55,11 @@
     <div id="correctCount"></div>
   </div>
 
+  <div id="verseScreen" class="screen">
+    <h1 style="font-size: 2.5rem; margin-bottom: 40px;">John 3:16</h1>
+    <div id="verseText" style="font-size: 3rem; line-height: 1.6; max-width: 1200px; margin: 0 auto;"></div>
+  </div>
+
   <script>
     const socket = io();
     let currentGameState = {};
@@ -66,9 +71,10 @@
 
     const emojiRounds = [
       { emoji: '❤️', answer: 'LOVE' },
-      { emoji: '👨‍👦', answer: 'SON' },
+      { emoji: '🌍', answer: 'WORLD' },
       { emoji: '🎁', answer: 'GAVE' },
-      { emoji: '🌱', answer: 'LIFE' }
+      { emoji: '👴👉👦', answer: 'SON' },
+      { emoji: '🌱🧬', answer: 'LIFE' }
     ];
 
     fetch('/qr')
@@ -144,6 +150,43 @@
     socket.on('revealAnswer', () => {
       const round = emojiRounds[currentGameState.emojiRound];
       document.getElementById('answerReveal').textContent = round.answer;
+    });
+
+    // Verse reveal
+    socket.on('showVerse', ({ mode }) => {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('verseScreen').classList.add('active');
+
+      const verse = "For God so LOVED the WORLD that He GAVE His one and only SON, that whoever believes in Him shall not perish, but have eternal LIFE.";
+      const words = verse.split(' ');
+      const verseDiv = document.getElementById('verseText');
+
+      if (mode === 'word-by-word') {
+        verseDiv.innerHTML = '';
+        let index = 0;
+
+        const interval = setInterval(() => {
+          if (index < words.length) {
+            const word = words[index];
+            const span = document.createElement('span');
+            span.textContent = word + ' ';
+
+            // Highlight key words
+            if (['LOVED', 'WORLD', 'GAVE', 'SON', 'LIFE'].includes(word.replace(/[.,]/g, ''))) {
+              span.style.color = '#FFD700';
+              span.style.fontWeight = 'bold';
+            }
+
+            verseDiv.appendChild(span);
+            index++;
+          } else {
+            clearInterval(interval);
+          }
+        }, 400); // 400ms per word
+      } else if (mode === 'full') {
+        verseDiv.innerHTML = verse.replace(/LOVED|WORLD|GAVE|SON|LIFE/g,
+          '<span style="color: #FFD700; font-weight: bold;">$&</span>');
+      }
     });
   </script>
 </body>
