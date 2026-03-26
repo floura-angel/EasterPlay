@@ -6,12 +6,7 @@
   <title>Player - Interactive Game</title>
   <script src="/socket.io/socket.io.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Arial', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -22,7 +17,6 @@
       align-items: center;
       padding: 20px;
     }
-
     .container {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
@@ -33,26 +27,10 @@
       box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       text-align: center;
     }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
+    h1 { font-size: 2rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+    h2 { font-size: 1.5rem; margin-bottom: 15px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
     input[type="text"] {
       width: 100%;
       padding: 15px;
@@ -63,7 +41,6 @@
       background: rgba(255, 255, 255, 0.9);
       color: #333;
     }
-
     button {
       background: #4CAF50;
       color: white;
@@ -75,34 +52,16 @@
       transition: background 0.3s;
       width: 100%;
     }
-
-    button:hover {
-      background: #45a049;
-    }
-
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    .waiting {
-      font-size: 1.2rem;
-      opacity: 0.8;
-      margin-top: 20px;
-    }
-
-    .emoji-large {
-      font-size: 5rem;
-      margin: 20px 0;
-    }
-
+    button:hover { background: #45a049; }
+    .waiting { font-size: 1.2rem; opacity: 0.8; margin-top: 20px; }
+    .emoji-large { font-size: 5rem; margin: 20px 0; }
     .success {
       background: rgba(76, 175, 80, 0.3);
       padding: 15px;
       border-radius: 10px;
       margin-top: 15px;
+      display: none;
     }
-
     .round-info {
       background: rgba(255, 255, 255, 0.2);
       padding: 10px;
@@ -116,31 +75,24 @@
   <div class="container">
     <h1>🎮 Interactive Game</h1>
 
-    <!-- Welcome Screen -->
     <div id="welcomeScreen" class="screen active">
       <h2>Welcome!</h2>
       <p class="waiting">Waiting for the game to start...</p>
     </div>
 
-    <!-- Word Cloud Input -->
     <div id="wordCloudScreen" class="screen">
       <h2 id="questionText"></h2>
       <input type="text" id="wordInput" placeholder="Type your word..." maxlength="50">
       <button onclick="submitWord()">Submit</button>
-      <div id="wordSuccess" class="success" style="display: none;">
-        Word submitted! ✓
-      </div>
+      <div id="wordSuccess" class="success">Word submitted! ✓</div>
     </div>
 
-    <!-- Emoji Guessing Game -->
     <div id="emojiScreen" class="screen">
       <div class="round-info" id="emojiRoundInfo"></div>
       <div class="emoji-large" id="emojiQuestion"></div>
       <input type="text" id="guessInput" placeholder="Your answer..." maxlength="20">
       <button onclick="submitGuess()">Submit Guess</button>
-      <div id="guessSuccess" class="success" style="display: none;">
-        Guess submitted! ✓
-      </div>
+      <div id="guessSuccess" class="success">Guess submitted! ✓</div>
     </div>
   </div>
 
@@ -154,17 +106,14 @@
       "What is love?"
     ];
 
-    // Notify server of player join
     socket.emit('playerJoined');
 
-    // Handle game state updates
     socket.on('gameState', (state) => {
       currentGameState = state;
       updatePlayerView(state);
     });
 
     function updatePlayerView(state) {
-      // Hide all screens
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
 
       if (state.currentScreen === 'wordcloud') {
@@ -211,7 +160,6 @@
       }
     }
 
-    // Allow Enter key to submit
     document.getElementById('wordInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') submitWord();
     });
