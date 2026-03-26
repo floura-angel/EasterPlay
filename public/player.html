@@ -123,8 +123,8 @@
         document.getElementById('wordSuccess').style.display = 'none';
       } else if (state.currentScreen === 'emoji') {
         document.getElementById('emojiScreen').classList.add('active');
-        const emojiRounds = ['❤️', '👨‍👦', '🎁', '🌱'];
-        document.getElementById('emojiRoundInfo').textContent = `Round ${state.emojiRound + 1} of 4`;
+        const emojiRounds = ['❤️', '🌍', '🎁', '👴👉👦', '🌱🧬'];
+        document.getElementById('emojiRoundInfo').textContent = `Round ${state.emojiRound + 1} of 5`;
         document.getElementById('emojiQuestion').textContent = emojiRounds[state.emojiRound];
         document.getElementById('guessInput').value = '';
         document.getElementById('guessSuccess').style.display = 'none';
