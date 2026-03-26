@@ -9,12 +9,14 @@ Word Cloud & Emoji Guessing Game with real-time audience participation
 - Question 2: "What is love?"
 - Live word cloud updates as audience submits words
 
-### 2. Emoji Guessing Game
-Four rounds:
+### 2. Emoji Guessing Game (John 3:16)
+Five rounds revealing: "For God so loved the world that He gave His one and only Son, that whoever believes in Him shall not perish, but have eternal life."
+
 - Round 1: ❤️ = LOVE
-- Round 2: 👨‍👦 = SON
+- Round 2: 🌍 = WORLD
 - Round 3: 🎁 = GAVE
-- Round 4: 🌱 = LIFE
+- Round 4: 👴👉👦 = SON
+- Round 5: 🌱🧬 = LIFE
 
 ## 🚀 Deploy to Render (FREE - 3 minutes)
 
@@ -49,12 +51,16 @@ Once deployed, open these URLs:
 
 ### Game Flow:
 
-1. Show QR code → wait for people to join
-2. Click "Question 1" → people type words → word cloud grows
-3. Click "Question 2" → repeat
-4. Click "Round 1" in Emoji section → people guess
-5. Click "Reveal Answer" → show correct answer
-6. Repeat for rounds 2-4
+1. **Show QR code** → wait for people to join
+2. **Click "Question 1"** → people type words → word cloud grows
+3. **Click "Question 2"** → repeat
+4. **Click "Round 1"** (❤️ LOVE) → people guess → Reveal Answer
+5. **Click "Round 2"** (🌍 WORLD) → people guess → Reveal Answer
+6. **Click "Round 3"** (🎁 GAVE) → people guess → Reveal Answer
+7. **Click "Round 4"** (👴👉👦 SON) → people guess → Reveal Answer
+8. **Click "Round 5"** (🌱🧬 LIFE) → people guess → Reveal Answer
+9. **Click "Reveal Word by Word"** → Shows John 3:16 one word at a time with key words highlighted in gold
+10. **Or "Show Full Verse"** → Shows complete verse instantly
 
 ## ⚠️ Important: Wake Up Before Event
 
