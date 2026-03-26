@@ -53,14 +53,24 @@
 
     <div class="section">
       <h2>😀 Emoji Game Control</h2>
-      <p class="info-text">Rounds: 1️⃣ ❤️ = LOVE | 2️⃣ 👨‍👦 = SON | 3️⃣ 🎁 = GAVE | 4️⃣ 🌱 = LIFE</p>
+      <p class="info-text">John 3:16 - For God so LOVED the WORLD that He GAVE His one and only SON, that whoever believes in Him shall not perish, but have eternal LIFE.</p>
       <div class="button-group">
-        <button onclick="setEmojiRound(0)">Round 1 (❤️)</button>
-        <button onclick="setEmojiRound(1)">Round 2 (👨‍👦)</button>
-        <button onclick="setEmojiRound(2)">Round 3 (🎁)</button>
-        <button onclick="setEmojiRound(3)">Round 4 (🌱)</button>
+        <button onclick="setEmojiRound(0)">Round 1 (❤️ LOVE)</button>
+        <button onclick="setEmojiRound(1)">Round 2 (🌍 WORLD)</button>
+        <button onclick="setEmojiRound(2)">Round 3 (🎁 GAVE)</button>
+        <button onclick="setEmojiRound(3)">Round 4 (👴👉👦 SON)</button>
+        <button onclick="setEmojiRound(4)">Round 5 (🌱🧬 LIFE)</button>
       </div>
       <button onclick="revealAnswer()">Reveal Answer</button>
+    </div>
+
+    <div class="section">
+      <h2>📖 Verse Reveal (John 3:16)</h2>
+      <p class="info-text">After completing all 5 rounds, reveal the full verse</p>
+      <div class="button-group">
+        <button onclick="showVerse('word-by-word')" style="background: #FF9800;">Reveal Word by Word</button>
+        <button onclick="showVerse('full')" style="background: #FF9800;">Show Full Verse</button>
+      </div>
     </div>
 
     <div class="section">
@@ -103,6 +113,10 @@
 
     function revealAnswer() {
       socket.emit('revealAnswer');
+    }
+
+    function showVerse(mode) {
+      socket.emit('showVerse', mode);
     }
 
     function resetAll() {
