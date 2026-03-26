@@ -1,9 +1,6 @@
-# Interactive Game - Word Cloud & Emoji Guessing
+# 🐣 Easter Play - Interactive Game
 
-A real-time interactive game with three views:
-- **Display** (projector): Shows QR code, word clouds, and emoji rounds
-- **Controller** (you): Control which screen shows and game flow
-- **Player** (audience): Join via QR code and participate
+Word Cloud & Emoji Guessing Game with real-time audience participation
 
 ## Features
 
@@ -19,57 +16,39 @@ Four rounds:
 - Round 3: 🎁 = GAVE
 - Round 4: 🌱 = LIFE
 
-## Quick Deploy to Vercel (FREE)
+## 🚀 Deploy to Render (FREE - 3 minutes)
 
-### Option 1: Deploy with Vercel CLI (2 minutes)
+1. **Push code to GitHub** (your personal account)
 
-1. **Install Vercel CLI:**
-   ```bash
-   npm install -g vercel
-   ```
+2. **Go to [Render.com](https://render.com)**
+   - Sign up with GitHub (free)
 
-2. **Deploy:**
-   ```bash
-   cd /workarea/docs
-   vercel
-   ```
+3. **Create New Web Service**
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository: `floura-angel/EasterPlay`
+   - Click "Connect"
 
-3. **Follow the prompts:**
-   - Login to Vercel (creates free account if needed)
-   - Confirm project settings (just press Enter for defaults)
-   - Done! You'll get a URL like `your-game.vercel.app`
+4. **Configure (use these exact settings):**
+   - **Name**: `easter-play`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `node server.js`
+   - **Plan**: `Free`
 
-### Option 2: Deploy via Vercel Website (3 minutes)
+5. **Click "Create Web Service"**
+   - Wait 2-3 minutes for deployment
+   - You'll get a URL like: `https://easter-play.onrender.com`
 
-1. Push this folder to GitHub
-2. Go to [vercel.com](https://vercel.com)
-3. Click "Import Project"
-4. Select your GitHub repository
-5. Click "Deploy"
-6. Done!
+## 🎮 How to Use
 
-## How to Use
+Once deployed, open these URLs:
 
-Once deployed, you'll have a URL like `https://your-game.vercel.app`
+1. **Display** (projector): `https://easter-play.onrender.com/display.html`
+2. **Controller** (you): `https://easter-play.onrender.com/controller.html`
+3. **Player** (audience): Scans QR code shown on display
 
-### Setup:
-1. Open `https://your-game.vercel.app/display.html` on your projector/screen
-2. Open `https://your-game.vercel.app/controller.html` on your phone/laptop
-3. The display will show a QR code
-4. Audience scans QR code → takes them to player view
+### Game Flow:
 
-### Running the Game:
-
-**Controller buttons:**
-- "Show QR Code" - Display QR for audience to join
-- "Show Word Cloud" - Switch to word cloud view
-- "Question 1/2" - Choose which question
-- "Show Emoji Game" - Start emoji guessing
-- "Round 1-4" - Select emoji round
-- "Reveal Answer" - Show the correct answer
-- "Reset" - Clear data and start over
-
-**Flow example:**
 1. Show QR code → wait for people to join
 2. Click "Question 1" → people type words → word cloud grows
 3. Click "Question 2" → repeat
@@ -77,31 +56,36 @@ Once deployed, you'll have a URL like `https://your-game.vercel.app`
 5. Click "Reveal Answer" → show correct answer
 6. Repeat for rounds 2-4
 
-## Local Development
+## ⚠️ Important: Wake Up Before Event
+
+Render free tier sleeps after 15 minutes of inactivity.
+
+**Before your event:** Open the URL 5 minutes early so it wakes up (takes 30-60 seconds first time).
+
+## 🧪 Local Testing
 
 ```bash
 npm install
-npm start
+node server.js
 ```
 
 Then open:
-- Display: http://localhost:3000/display.html
-- Controller: http://localhost:3000/controller.html
-- Player: http://localhost:3000/player.html
+- http://localhost:3000/display.html
+- http://localhost:3000/controller.html
+- http://localhost:3000/player.html
 
-## Tech Stack
+## 📁 Files
 
-- **Backend:** Node.js + Express + Socket.io
-- **Frontend:** Vanilla HTML/CSS/JavaScript
-- **Word Cloud:** WordCloud2.js
-- **QR Codes:** node-qrcode
-- **Real-time:** WebSockets via Socket.io
-
-## Files
-
-- `server.js` - Backend server handling real-time connections
+- `server.js` - Backend server (Node.js + Socket.io)
+- `public/index.html` - Landing page
 - `public/display.html` - Projector view
-- `public/controller.html` - Game controller interface
-- `public/player.html` - Audience participation view
+- `public/controller.html` - Game controller
+- `public/player.html` - Audience view
 - `package.json` - Dependencies
-- `vercel.json` - Vercel deployment config
+
+## 💡 Tips
+
+- Keep the controller open on your phone during the game
+- Test everything 10 minutes before your event
+- The game resets when you click "Reset Everything"
+- Player count shows live on both display and controller
