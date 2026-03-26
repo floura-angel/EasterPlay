@@ -7,12 +7,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Arial', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -23,105 +18,23 @@
       justify-content: center;
       align-items: center;
     }
-
-    .screen {
-      display: none;
-      text-align: center;
-      width: 100%;
-      height: 100%;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-    }
-
-    .screen.active {
-      display: flex;
-    }
-
-    h1 {
-      font-size: 4rem;
-      margin-bottom: 30px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-    }
-
-    #qrCode {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      margin: 20px auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    #qrCode img {
-      max-width: 400px;
-      display: block;
-    }
-
-    #joinUrl {
-      font-size: 1.8rem;
-      margin-top: 20px;
-      background: rgba(255,255,255,0.2);
-      padding: 15px 30px;
-      border-radius: 10px;
-    }
-
-    #playerCount {
-      font-size: 2rem;
-      margin-top: 30px;
-      background: rgba(255,255,255,0.3);
-      padding: 20px 40px;
-      border-radius: 15px;
-      display: inline-block;
-    }
-
-    #wordCloudCanvas {
-      width: 90vw;
-      height: 70vh;
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      margin: 20px auto;
-    }
-
-    .emoji-display {
-      font-size: 15rem;
-      margin: 40px 0;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    .round-info {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      opacity: 0.9;
-    }
-
-    #answerReveal {
-      font-size: 5rem;
-      font-weight: bold;
-      color: #FFD700;
-      margin-top: 30px;
-      text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-    }
-
-    #correctCount {
-      font-size: 2.5rem;
-      margin-top: 20px;
-      color: #90EE90;
-    }
+    .screen { display: none; text-align: center; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; padding: 40px; }
+    .screen.active { display: flex; }
+    h1 { font-size: 4rem; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    h2 { font-size: 2.5rem; margin-bottom: 20px; }
+    #qrCode { background: white; padding: 30px; border-radius: 20px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    #qrCode img { max-width: 400px; display: block; }
+    #joinUrl { font-size: 1.8rem; margin-top: 20px; background: rgba(255,255,255,0.2); padding: 15px 30px; border-radius: 10px; }
+    #playerCount { font-size: 2rem; margin-top: 30px; background: rgba(255,255,255,0.3); padding: 20px 40px; border-radius: 15px; display: inline-block; }
+    #wordCloudCanvas { width: 90vw; height: 70vh; background: rgba(255,255,255,0.1); border-radius: 20px; margin: 20px auto; }
+    .emoji-display { font-size: 15rem; margin: 40px 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .round-info { font-size: 2rem; margin-bottom: 20px; opacity: 0.9; }
+    #answerReveal { font-size: 5rem; font-weight: bold; color: #FFD700; margin-top: 30px; text-shadow: 3px 3px 6px rgba(0,0,0,0.5); }
+    #correctCount { font-size: 2.5rem; margin-top: 20px; color: #90EE90; }
   </style>
 </head>
 <body>
-  <!-- QR Code Screen -->
   <div id="qrScreen" class="screen">
     <h1>Join the Game!</h1>
     <h2>Scan the QR code</h2>
@@ -130,13 +43,11 @@
     <div id="playerCount">Players: 0</div>
   </div>
 
-  <!-- Word Cloud Screen -->
   <div id="wordCloudScreen" class="screen">
     <h2 id="wordCloudQuestion"></h2>
     <canvas id="wordCloudCanvas"></canvas>
   </div>
 
-  <!-- Emoji Guessing Game Screen -->
   <div id="emojiScreen" class="screen">
     <div class="round-info" id="roundInfo"></div>
     <div class="emoji-display" id="emojiDisplay"></div>
@@ -160,7 +71,6 @@
       { emoji: '🌱', answer: 'LIFE' }
     ];
 
-    // Load QR code
     fetch('/qr')
       .then(res => res.json())
       .then(data => {
@@ -168,7 +78,6 @@
         document.getElementById('joinUrl').textContent = data.url;
       });
 
-    // Handle game state updates
     socket.on('gameState', (state) => {
       currentGameState = state;
       updateDisplay(state);
@@ -192,10 +101,8 @@
     });
 
     function updateDisplay(state) {
-      // Hide all screens
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
 
-      // Show active screen
       if (state.currentScreen === 'qr') {
         document.getElementById('qrScreen').classList.add('active');
       } else if (state.currentScreen === 'wordcloud') {
@@ -208,7 +115,7 @@
         const round = emojiRounds[state.emojiRound];
         document.getElementById('roundInfo').textContent = `Round ${state.emojiRound + 1}`;
         document.getElementById('emojiDisplay').textContent = round.emoji;
-        document.getElementById('answerReveal').textContent = ''; // Hidden until revealed
+        document.getElementById('answerReveal').textContent = '';
         document.getElementById('correctCount').textContent = '';
       }
     }
@@ -234,7 +141,6 @@
       });
     }
 
-    // Expose function for controller to reveal answer
     socket.on('revealAnswer', () => {
       const round = emojiRounds[currentGameState.emojiRound];
       document.getElementById('answerReveal').textContent = round.answer;
