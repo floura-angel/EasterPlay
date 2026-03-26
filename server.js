@@ -33,9 +33,10 @@ let gameState = {
 
 const emojiRounds = [
   { emoji: '❤️', answer: 'LOVE' },
-  { emoji: '👨‍👦', answer: 'SON' },
+  { emoji: '🌍', answer: 'WORLD' },
   { emoji: '🎁', answer: 'GAVE' },
-  { emoji: '🌱', answer: 'LIFE' }
+  { emoji: '👴👉👦', answer: 'SON' },
+  { emoji: '🌱🧬', answer: 'LIFE' }
 ];
 
 const wordCloudQuestions = [
@@ -131,6 +132,10 @@ io.on('connection', (socket) => {
 
   socket.on('revealAnswer', () => {
     io.emit('revealAnswer');
+  });
+
+  socket.on('showVerse', (mode) => {
+    io.emit('showVerse', { mode });
   });
 
   socket.on('disconnect', () => {
