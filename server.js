@@ -13,15 +13,20 @@ const PORT = process.env.PORT || 3000;
 // Serve static files
 app.use(express.static('public'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Game state
 let gameState = {
-  currentScreen: 'qr', // qr, wordcloud, emoji
-  currentQuestion: 0, // 0 or 1 for wordcloud questions
+  currentScreen: 'qr',
+  currentQuestion: 0,
   wordCloudData: {
-    question1: {}, // {word: count}
+    question1: {},
     question2: {}
   },
-  emojiRound: 0, // 0-3
+  emojiRound: 0,
   emojiAnswers: {},
   playerCount: 0
 };
@@ -53,16 +58,13 @@ app.get('/qr', async (req, res) => {
 io.on('connection', (socket) => {
   console.log('New connection:', socket.id);
 
-  // Send current game state to new connection
   socket.emit('gameState', gameState);
 
-  // Player joined
   socket.on('playerJoined', () => {
     gameState.playerCount++;
     io.emit('playerCount', gameState.playerCount);
   });
 
-  // Controller actions
   socket.on('changeScreen', (screen) => {
     gameState.currentScreen = screen;
     io.emit('gameState', gameState);
@@ -75,7 +77,7 @@ io.on('connection', (socket) => {
 
   socket.on('setEmojiRound', (round) => {
     gameState.emojiRound = round;
-    gameState.emojiAnswers = {}; // Reset answers for new round
+    gameState.emojiAnswers = {};
     io.emit('gameState', gameState);
   });
 
@@ -100,7 +102,6 @@ io.on('connection', (socket) => {
     io.emit('gameState', gameState);
   });
 
-  // Player submissions
   socket.on('submitWord', (data) => {
     const { questionIndex, word } = data;
     const cleanWord = word.trim().toUpperCase();
@@ -128,6 +129,10 @@ io.on('connection', (socket) => {
     io.emit('emojiAnswersUpdate', gameState.emojiAnswers);
   });
 
+  socket.on('revealAnswer', () => {
+    io.emit('revealAnswer');
+  });
+
   socket.on('disconnect', () => {
     console.log('Disconnected:', socket.id);
     gameState.playerCount = Math.max(0, gameState.playerCount - 1);
@@ -137,6 +142,4 @@ io.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Open http://localhost:${PORT}/display.html for the projector view`);
-  console.log(`Open http://localhost:${PORT}/controller.html for the controller`);
 });
