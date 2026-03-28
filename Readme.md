@@ -1,4 +1,4 @@
-# 🐣 Easter Play - Interactive Game
+# Easter Play - Interactive Game
 
 Word Cloud & Emoji Guessing Game with real-time audience participation
 
