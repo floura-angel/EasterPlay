@@ -35,8 +35,8 @@ const emojiRounds = [
   { emoji: '❤️', answer: 'LOVE' },
   { emoji: '🌍', answer: 'WORLD' },
   { emoji: '🎁', answer: 'GAVE' },
-  { emoji: '👴👉👦', answer: 'SON' },
-  { emoji: '🌱🧬', answer: 'LIFE' }
+  { emoji: '👦', answer: 'SON' },
+  { emoji: '🌱', answer: 'LIFE' }
 ];
 
 const wordCloudQuestions = [
