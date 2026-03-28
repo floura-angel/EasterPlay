@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player - Interactive Game</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      text-align: center;
+    }
+    h1 { font-size: 2rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+    h2 { font-size: 1.5rem; margin-bottom: 15px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+    button:hover { background: #45a049; }
+    .waiting { font-size: 1.2rem; opacity: 0.8; margin-top: 20px; }
+    .emoji-large { font-size: 5rem; margin: 20px 0; }
+    .success {
+      background: rgba(76, 175, 80, 0.3);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      display: none;
+    }
+    .round-info {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Interactive Game</h1>
+
+    <div id="welcomeScreen" class="screen active">
+      <h2>Welcome!</h2>
+      <p class="waiting">Waiting for the game to start...</p>
+    </div>
+
+    <div id="wordCloudScreen" class="screen">
+      <h2 id="questionText"></h2>
+      <input type="text" id="wordInput" placeholder="Type your word..." maxlength="50">
+      <button onclick="submitWord()">Submit</button>
+      <div id="wordSuccess" class="success">Word submitted! ✓</div>
+    </div>
+
+    <div id="emojiScreen" class="screen">
+      <div class="round-info" id="emojiRoundInfo"></div>
+      <div class="emoji-large" id="emojiQuestion"></div>
+      <input type="text" id="guessInput" placeholder="Your answer..." maxlength="20">
+      <button onclick="submitGuess()">Submit Guess</button>
+      <div id="guessSuccess" class="success">Guess submitted! ✓</div>
+    </div>
+  </div>
+
+  <script>
+    const socket = io();
+    let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+    let currentGameState = {};
+
+    const questions = [
+      "What are people searching for?",
+      "What is love?"
+    ];
+
+    socket.emit('playerJoined');
+
+    socket.on('gameState', (state) => {
+      currentGameState = state;
+      updatePlayerView(state);
+    });
+
+    function updatePlayerView(state) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+      if (state.currentScreen === 'wordcloud') {
+        document.getElementById('wordCloudScreen').classList.add('active');
+        document.getElementById('questionText').textContent = questions[state.currentQuestion];
+        document.getElementById('wordInput').value = '';
+        document.getElementById('wordSuccess').style.display = 'none';
+      } else if (state.currentScreen === 'emoji') {
+        document.getElementById('emojiScreen').classList.add('active');
+        const emojiRounds = ['❤️', '🌍', '🎁', '👴👉👦', '🌱🧬'];
+        document.getElementById('emojiRoundInfo').textContent = `Round ${state.emojiRound + 1} of 5`;
+        document.getElementById('emojiQuestion').textContent = emojiRounds[state.emojiRound];
+        document.getElementById('guessInput').value = '';
+        document.getElementById('guessSuccess').style.display = 'none';
+      } else {
+        document.getElementById('welcomeScreen').classList.add('active');
+      }
+    }
+
+    function submitWord() {
+      const word = document.getElementById('wordInput').value.trim();
+      if (word) {
+        socket.emit('submitWord', {
+          questionIndex: currentGameState.currentQuestion,
+          word: word
+        });
+        document.getElementById('wordInput').value = '';
+        document.getElementById('wordSuccess').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('wordSuccess').style.display = 'none';
+        }, 2000);
+      }
+    }
+
+    function submitGuess() {
+      const guess = document.getElementById('guessInput').value.trim();
+      if (guess) {
+        socket.emit('submitEmojiGuess', {
+          playerId: playerId,
+          guess: guess
+        });
+        document.getElementById('guessInput').value = '';
+        document.getElementById('guessSuccess').style.display = 'block';
+      }
+    }
+
+    document.getElementById('wordInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitWord();
+    });
+
+    document.getElementById('guessInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitGuess();
+    });
+  </script>
+</body>
+</html>

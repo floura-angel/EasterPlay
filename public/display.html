@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display - Interactive Game</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .screen { display: none; text-align: center; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; padding: 40px; }
+    .screen.active { display: flex; }
+    h1 { font-size: 4rem; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    h2 { font-size: 2.5rem; margin-bottom: 20px; }
+    #qrCode { background: white; padding: 30px; border-radius: 20px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    #qrCode img { max-width: 400px; display: block; }
+    #joinUrl { font-size: 1.8rem; margin-top: 20px; background: rgba(255,255,255,0.2); padding: 15px 30px; border-radius: 10px; }
+    #playerCount { font-size: 2rem; margin-top: 30px; background: rgba(255,255,255,0.3); padding: 20px 40px; border-radius: 15px; display: inline-block; }
+    #wordCloudCanvas { width: 90vw; height: 70vh; background: rgba(255,255,255,0.1); border-radius: 20px; margin: 20px auto; }
+    .emoji-display { font-size: 15rem; margin: 40px 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .round-info { font-size: 2rem; margin-bottom: 20px; opacity: 0.9; }
+    #answerReveal { font-size: 5rem; font-weight: bold; color: #FFD700; margin-top: 30px; text-shadow: 3px 3px 6px rgba(0,0,0,0.5); }
+    #correctCount { font-size: 2.5rem; margin-top: 20px; color: #90EE90; }
+  </style>
+</head>
+<body>
+  <div id="qrScreen" class="screen">
+    <h1>Join the Game!</h1>
+    <h2>Scan the QR code</h2>
+    <div id="qrCode"></div>
+    <div id="joinUrl"></div>
+    <div id="playerCount">Players: 0</div>
+  </div>
+
+  <div id="wordCloudScreen" class="screen">
+    <h2 id="wordCloudQuestion"></h2>
+    <canvas id="wordCloudCanvas"></canvas>
+  </div>
+
+  <div id="emojiScreen" class="screen">
+    <div class="round-info" id="roundInfo"></div>
+    <div class="emoji-display" id="emojiDisplay"></div>
+    <div id="answerReveal"></div>
+    <div id="correctCount"></div>
+  </div>
+
+  <div id="verseScreen" class="screen">
+    <h1 style="font-size: 2.5rem; margin-bottom: 40px;">John 3:16</h1>
+    <div id="verseText" style="font-size: 3rem; line-height: 1.6; max-width: 1200px; margin: 0 auto;"></div>
+  </div>
+
+  <script>
+    const socket = io();
+    let currentGameState = {};
+
+    const questions = [
+      "What are people searching for?",
+      "What is love?"
+    ];
+
+    const emojiRounds = [
+      { emoji: '❤️', answer: 'LOVE' },
+      { emoji: '🌍', answer: 'WORLD' },
+      { emoji: '🎁', answer: 'GAVE' },
+      { emoji: '👴👉👦', answer: 'SON' },
+      { emoji: '🌱🧬', answer: 'LIFE' }
+    ];
+
+    fetch('/qr')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('qrCode').innerHTML = `<img src="${data.qr}" alt="QR Code">`;
+        document.getElementById('joinUrl').textContent = data.url;
+      });
+
+    socket.on('gameState', (state) => {
+      currentGameState = state;
+      updateDisplay(state);
+    });
+
+    socket.on('playerCount', (count) => {
+      document.getElementById('playerCount').textContent = `Players: ${count}`;
+    });
+
+    socket.on('wordCloudUpdate', ({ questionIndex, data }) => {
+      if (currentGameState.currentScreen === 'wordcloud' && currentGameState.currentQuestion === questionIndex) {
+        renderWordCloud(data);
+      }
+    });
+
+    socket.on('emojiAnswersUpdate', (answers) => {
+      const correctCount = Object.values(answers).filter(a => a.correct).length;
+      const totalCount = Object.keys(answers).length;
+      document.getElementById('correctCount').textContent =
+        `Correct: ${correctCount} / ${totalCount}`;
+    });
+
+    function updateDisplay(state) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+      if (state.currentScreen === 'qr') {
+        document.getElementById('qrScreen').classList.add('active');
+      } else if (state.currentScreen === 'wordcloud') {
+        document.getElementById('wordCloudScreen').classList.add('active');
+        document.getElementById('wordCloudQuestion').textContent = questions[state.currentQuestion];
+        const data = state.currentQuestion === 0 ? state.wordCloudData.question1 : state.wordCloudData.question2;
+        renderWordCloud(data);
+      } else if (state.currentScreen === 'emoji') {
+        document.getElementById('emojiScreen').classList.add('active');
+        const round = emojiRounds[state.emojiRound];
+        document.getElementById('roundInfo').textContent = `Round ${state.emojiRound + 1}`;
+        document.getElementById('emojiDisplay').textContent = round.emoji;
+        document.getElementById('answerReveal').textContent = '';
+        document.getElementById('correctCount').textContent = '';
+      }
+    }
+
+    function renderWordCloud(data) {
+      const canvas = document.getElementById('wordCloudCanvas');
+      const words = Object.entries(data).map(([word, count]) => [word, count * 10]);
+
+      if (words.length === 0) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+
+      WordCloud(canvas, {
+        list: words,
+        gridSize: 10,
+        weightFactor: 3,
+        fontFamily: 'Arial, sans-serif',
+        color: 'random-light',
+        rotateRatio: 0.3,
+        backgroundColor: 'transparent'
+      });
+    }
+
+    socket.on('revealAnswer', () => {
+      const round = emojiRounds[currentGameState.emojiRound];
+      document.getElementById('answerReveal').textContent = round.answer;
+    });
+
+    // Verse reveal
+    socket.on('showVerse', ({ mode }) => {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('verseScreen').classList.add('active');
+
+      const verse = "For God so LOVED the WORLD that He GAVE His one and only SON, that whoever believes in Him shall not perish, but have eternal LIFE.";
+      const words = verse.split(' ');
+      const verseDiv = document.getElementById('verseText');
+
+      if (mode === 'word-by-word') {
+        verseDiv.innerHTML = '';
+        let index = 0;
+
+        const interval = setInterval(() => {
+          if (index < words.length) {
+            const word = words[index];
+            const span = document.createElement('span');
+            span.textContent = word + ' ';
+
+            // Highlight key words
+            if (['LOVED', 'WORLD', 'GAVE', 'SON', 'LIFE'].includes(word.replace(/[.,]/g, ''))) {
+              span.style.color = '#FFD700';
+              span.style.fontWeight = 'bold';
+            }
+
+            verseDiv.appendChild(span);
+            index++;
+          } else {
+            clearInterval(interval);
+          }
+        }, 400); // 400ms per word
+      } else if (mode === 'full') {
+        verseDiv.innerHTML = verse.replace(/LOVED|WORLD|GAVE|SON|LIFE/g,
+          '<span style="color: #FFD700; font-weight: bold;">$&</span>');
+      }
+    });
+  </script>
+</body>
+</html>
