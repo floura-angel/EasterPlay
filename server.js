@@ -24,7 +24,10 @@ let gameState = {
   currentQuestion: 0,
   wordCloudData: {
     question1: {},
-    question2: {}
+    question2: {},
+    question3: {},
+    question4: {},
+    question5: {}
   },
   emojiRound: 0,
   emojiAnswers: {},
@@ -40,8 +43,11 @@ const emojiRounds = [
 ];
 
 const wordCloudQuestions = [
-  "What are people searching for?",
-  "What is love?"
+  "Say one word you think of when you hear 'God.'",
+  "Say one word for love.",
+  "Say one word for the best gift ever.",
+  "Say one word for how you're feeling today.",
+  "Say one word for something that makes you smile."
 ];
 
 // Generate QR code endpoint
@@ -83,10 +89,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('resetWordCloud', (questionIndex) => {
-    if (questionIndex === 0) {
-      gameState.wordCloudData.question1 = {};
-    } else {
-      gameState.wordCloudData.question2 = {};
+    const questionKey = `question${questionIndex + 1}`;
+    if (gameState.wordCloudData[questionKey] !== undefined) {
+      gameState.wordCloudData[questionKey] = {};
     }
     io.emit('gameState', gameState);
   });
@@ -95,7 +100,7 @@ io.on('connection', (socket) => {
     gameState = {
       currentScreen: 'qr',
       currentQuestion: 0,
-      wordCloudData: { question1: {}, question2: {} },
+      wordCloudData: { question1: {}, question2: {}, question3: {}, question4: {}, question5: {} },
       emojiRound: 0,
       emojiAnswers: {},
       playerCount: 0
@@ -108,7 +113,7 @@ io.on('connection', (socket) => {
     const cleanWord = word.trim().toUpperCase();
 
     if (cleanWord) {
-      const questionKey = questionIndex === 0 ? 'question1' : 'question2';
+      const questionKey = `question${questionIndex + 1}`;
       if (!gameState.wordCloudData[questionKey][cleanWord]) {
         gameState.wordCloudData[questionKey][cleanWord] = 0;
       }

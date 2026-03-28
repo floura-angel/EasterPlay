@@ -65,8 +65,11 @@
     let currentGameState = {};
 
     const questions = [
-      "What are people searching for?",
-      "What is love?"
+      "Say one word you think of when you hear 'God.'",
+      "Say one word for love.",
+      "Say one word for the best gift ever.",
+      "Say one word for how you're feeling today.",
+      "Say one word for something that makes you smile."
     ];
 
     const emojiRounds = [
@@ -114,7 +117,8 @@
       } else if (state.currentScreen === 'wordcloud') {
         document.getElementById('wordCloudScreen').classList.add('active');
         document.getElementById('wordCloudQuestion').textContent = questions[state.currentQuestion];
-        const data = state.currentQuestion === 0 ? state.wordCloudData.question1 : state.wordCloudData.question2;
+        const questionKey = `question${state.currentQuestion + 1}`;
+        const data = state.wordCloudData[questionKey] || {};
         renderWordCloud(data);
       } else if (state.currentScreen === 'emoji') {
         document.getElementById('emojiScreen').classList.add('active');

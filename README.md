@@ -5,8 +5,11 @@ Word Cloud & Emoji Guessing Game with real-time audience participation
 ## Features
 
 ### 1. Word Cloud Game
-- Question 1: "What are people searching for?"
-- Question 2: "What is love?"
+- Question 1: "Say one word you think of when you hear 'God.'"
+- Question 2: "Say one word for love."
+- Question 3: "Say one word for the best gift ever."
+- Question 4: "Say one word for how you're feeling today."
+- Question 5: "Say one word for something that makes you smile."
 - Live word cloud updates as audience submits words
 
 ### 2. Emoji Guessing Game (John 3:16)
@@ -15,8 +18,8 @@ Five rounds revealing: "For God so loved the world that He gave His one and only
 - Round 1: ❤️ = LOVE
 - Round 2: 🌍 = WORLD
 - Round 3: 🎁 = GAVE
-- Round 4: 👴👉👦 = SON
-- Round 5: 🌱🧬 = LIFE
+- Round 4: 👦 = SON
+- Round 5: 🌱 = LIFE
 
 ## 🚀 Deploy to Render (FREE - 3 minutes)
 
@@ -52,15 +55,18 @@ Once deployed, open these URLs:
 ### Game Flow:
 
 1. **Show QR code** → wait for people to join
-2. **Click "Question 1"** → people type words → word cloud grows
-3. **Click "Question 2"** → repeat
-4. **Click "Round 1"** (❤️ LOVE) → people guess → Reveal Answer
-5. **Click "Round 2"** (🌍 WORLD) → people guess → Reveal Answer
-6. **Click "Round 3"** (🎁 GAVE) → people guess → Reveal Answer
-7. **Click "Round 4"** (👴👉👦 SON) → people guess → Reveal Answer
-8. **Click "Round 5"** (🌱🧬 LIFE) → people guess → Reveal Answer
-9. **Click "Reveal Word by Word"** → Shows John 3:16 one word at a time with key words highlighted in gold
-10. **Or "Show Full Verse"** → Shows complete verse instantly
+2. **Click "Question 1" (God)** → people type words → word cloud grows
+3. **Click "Question 2" (Love)** → repeat
+4. **Click "Question 3" (Best gift)** → repeat
+5. **Click "Question 4" (Feeling today)** → repeat
+6. **Click "Question 5" (Makes you smile)** → repeat
+7. **Click "Round 1"** (❤️ LOVE) → people guess → Reveal Answer
+8. **Click "Round 2"** (🌍 WORLD) → people guess → Reveal Answer
+9. **Click "Round 3"** (🎁 GAVE) → people guess → Reveal Answer
+10. **Click "Round 4"** (👦 SON) → people guess → Reveal Answer
+11. **Click "Round 5"** (🌱 LIFE) → people guess → Reveal Answer
+12. **Click "Reveal Word by Word"** → Shows John 3:16 one word at a time with key words highlighted in gold
+13. **Or "Show Full Verse"** → Shows complete verse instantly
 
 ## ⚠️ Important: Wake Up Before Event
 
